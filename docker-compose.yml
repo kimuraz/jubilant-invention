@@ -1,0 +1,63 @@
+version: '3'
+
+services:
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - modules_network
+  redis_insight:
+    image: redis/redisinsight:latest
+    container_name: redis_insight
+    depends_on:
+      - redis
+    ports:
+      - "5540:5540"
+    networks:
+      - modules_network
+  orchestrator:
+    build: ./apis/orchestrator
+    container_name: orchestrator
+    command: ["./orchestrator"]
+    depends_on:
+      - redis
+    ports:
+      - "8080:8080"
+    networks:
+      - modules_network
+  question:
+    build: ./apis/questions
+    container_name: question
+    command: ["./questions"]
+    depends_on:
+      - redis
+    ports:
+      - "8081:8081"
+    networks:
+      - modules_network
+  movies:
+    build: ./apis/movies
+    container_name: movies
+    command: ["./movies"]
+    depends_on:
+      - redis
+    ports:
+      - "8082:8082"
+    networks:
+      - modules_network
+  genres:
+    build: ./apis/genres_preference
+    container_name: genres
+    command: ["./genres"]
+    depends_on:
+      - redis
+    ports:
+      - "8083:8083"
+    networks:
+      - modules_network
+
+networks:
+    modules_network:
+        driver: bridge
