@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import {computed, ref} from 'vue';
 
 const eventSource = ref<EventSource | null>(null);
 const userId = ref<string>('');
 const requestId = ref<string>('');
 const eventsLog = ref<any[]>([]);
+
+const reverseEventsLog = computed(() => eventsLog.value.reverse());
 
 const newRequest = async () => {
   const response = await fetch('http://localhost:8080/start', {
@@ -57,7 +59,7 @@ const initEventSource = () => {
     </div>
     <aside class="logger">
       <ul class="log-list">
-        <li v-for="log in eventsLog.reverse()" :key="log">
+        <li v-for="log in reverseEventsLog" :key="log">
           <p>{{ log }}</p>
         </li>
       </ul>
@@ -85,6 +87,7 @@ const initEventSource = () => {
     border: 1px solid #ccc;
     border-radius: 2px;
     padding: 5px;
+    overflow-y: auto;
     .log-list {
       list-style: none;
       display: flex;
