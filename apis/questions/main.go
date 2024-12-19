@@ -33,7 +33,7 @@ func (api *QuestionsAPI) Answers(c *gin.Context) {
 		return
 	}
 
-	jsonData, _ := json.Marshal(answersRequest.Questions)
+	jsonData, _ := json.Marshal(answersRequest)
 	api.redisClient.Publish(c.Request.Context(), "questions_channel", jsonData)
 	c.JSON(200, gin.H{"message": "Answers processed"})
 }

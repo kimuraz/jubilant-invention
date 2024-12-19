@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
@@ -61,9 +62,12 @@ func (api *OrchestrationAPI) SSEvents(c *gin.Context) {
 	var lastSentStage Stage
 	for {
 		if val, ok := dataStore.Load(requestID); ok {
+			fmt.Println("Request ID found: ", requestID)
+			fmt.Println("Last sent stage: ", lastSentStage)
 			userProcess := val.(UserProcess)
+			fmt.Println("Last sent stage: ", lastSentStage, userProcess.Stage)
 			if userProcess.Stage != lastSentStage {
-				lastSentStage = userProcess.Stage
+				fmt.Println("Sending stage: ", userProcess.Stage)
 				for _, module := range FEModulesDef {
 					if module.Stage == userProcess.Stage {
 						jsonData, _ := json.Marshal(module)
@@ -73,9 +77,12 @@ func (api *OrchestrationAPI) SSEvents(c *gin.Context) {
 						break
 					}
 				}
+				lastSentStage = userProcess.Stage
+
+				fmt.Println("Last sent stage: ", lastSentStage, userProcess.Stage)
 			}
 			select {
-			case <-time.After(30 * time.Second):
+			case <-time.After(3 * time.Second):
 				c.Writer.Write([]byte(": keep-alive\n\n"))
 				flusher.Flush()
 			}

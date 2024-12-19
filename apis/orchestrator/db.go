@@ -36,12 +36,13 @@ type UserProcess struct {
 type FEModule struct {
 	ModuleID  string `json:"moduleID"`
 	ModuleURL string `json:"moduleURL"`
+	ModuleTag string `json:"moduleTag"`
 	Stage     Stage  `json:"stage"`
 }
 
 var FEModulesDef = []FEModule{
-	{ModuleID: "questions", ModuleURL: "http://localhost:9000/fe/questions.js", Stage: Questions},
-	{ModuleID: "genres", ModuleURL: "http://localhost:9000/fe/genres.js", Stage: Genres},
-	{ModuleID: "movies", ModuleURL: "http://localhost:9000/fe/movies.js", Stage: Movies},
-	{ModuleID: "end", ModuleURL: "http://localhost:9000/fe/thanks.js", Stage: End},
+	{ModuleID: "questions", ModuleURL: "http://localhost:9000/fe/questions.js", ModuleTag: "questions-module", Stage: Questions},
+	{ModuleID: "genres", ModuleURL: "http://localhost:9000/fe/genres.js", ModuleTag: "genres-module", Stage: Genres},
+	{ModuleID: "movies", ModuleURL: "http://localhost:9000/fe/movies.js", ModuleTag: "movies-module", Stage: Movies},
+	{ModuleID: "end", ModuleURL: "http://localhost:9000/fe/thanks.js", ModuleTag: "thanks-module", Stage: End},
 }

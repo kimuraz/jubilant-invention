@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {computed, ref} from 'vue';
+import ModuleRenderer from "./components/ModuleRenderer.vue";
 
 const eventSource = ref<EventSource | null>(null);
 const userId = ref<string>('');
@@ -34,12 +35,19 @@ const resetEventSource = () => {
   initEventSource();
 }
 
+const module = ref({
+  url: '',
+  tag: '',
+});
 const initEventSource = () => {
   const orchestratorApiUrl = `http://localhost:8080/events?requestId=${requestId.value}`;
 
   eventSource.value = new EventSource(orchestratorApiUrl);
   eventSource.value.onmessage = (event: MessageEvent) => {
     const data = JSON.parse(event.data);
+    if (data.module) {
+      module.value = { url: data.module.moduleURL, tag: data.module.moduleTag };
+    }
     eventsLog.value = [...eventsLog.value, data];
   };
 }
@@ -54,7 +62,7 @@ const initEventSource = () => {
         <button @click="newRequest">Request</button>
       </header>
       <main class="module-target">
-
+        <ModuleRenderer :module-url="module.url" :module-tag="module.tag" :request-id="requestId"/>
       </main>
     </div>
     <aside class="logger">
